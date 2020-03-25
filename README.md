@@ -1,7 +1,7 @@
 # Under Development
 
 <p align=center>
-    <img src="img/demo.gif" width="652.32" height="393.12">
+    <img src="img/demo.gif" width="717.552" height="432.432">
 </p>
 
 
