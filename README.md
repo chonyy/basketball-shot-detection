@@ -5,12 +5,12 @@
 </p>
 
 
-## Basketball Fit to curve
+## Basketball Trajectory Fit to Curve
 <p align=center>
     <img src="img/trajectory.png">
 </p>
 
-## Connected Basketball Keypoints
+## Connected Basketball Detection Points
 <p align=center>
     <img src="img/trajectory_raw.png">
 </p>
