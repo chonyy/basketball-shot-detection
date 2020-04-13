@@ -6,7 +6,7 @@
 * **Red:** Miss
 * **Green:** Shot went in
 <p align=center>
-    <img src="img/judging.gif">
+    <img src="img/judging.gif" width="780" height="439.4">
 </p>
 
 ## Detecting Basketball and Hoop
