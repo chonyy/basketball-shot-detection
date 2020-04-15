@@ -1,6 +1,7 @@
 # Under Development
 
 ## Judging Basketball Shots
+* **Orange:** Detected hoop
 * **Blue:** Detected basketball 
 * **Purple:** Undetermined shot
 * **Red:** Miss
