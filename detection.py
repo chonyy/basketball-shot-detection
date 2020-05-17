@@ -1,17 +1,39 @@
 import time
-from absl import app, logging
 import cv2
 import numpy as np
 import tensorflow.compat.v1 as tf
-from flask import Flask, request, Response, jsonify, send_from_directory, abort
 import os
 import sys
-from sys import platform
 import argparse
 import matplotlib.pyplot as plt
+from sys import platform
 from scipy.optimize import curve_fit
 tf.disable_v2_behavior()
 
+
+def openpose_init():
+    try:
+        if platform == "win32":
+            import Release.pyopenpose as op
+        else:
+            sys.path.append('../../python')
+            from openpose import pyopenpose as op
+    except ImportError as e:
+        print('Error: OpenPose library could not be found. Did you enable `BUILD_PYTHON` in CMake and have this Python script in the right folder?')
+        raise e
+
+    # Custom Params (refer to include/openpose/flags.hpp for more parameters)
+    params = dict()
+    params["model_folder"] = "./models"
+
+    # Starting OpenPose
+    opWrapper = op.WrapperPython()
+    opWrapper.configure(params)
+    opWrapper.start()
+
+    # Process Image
+    datum = op.Datum()
+    return datum, opWrapper
 
 def fit_func(x, a, b, c):
     return a*(x ** 2) + b * x + c
@@ -168,9 +190,7 @@ def detect_shot(frame, trace, width, height, sess, image_tensor, boxes, scores, 
     combined = np.concatenate((frame, trace), axis=1)
     return combined, trace
 
-
-
-
+datum, opWrapper = openpose_init()
 detection_graph, image_tensor, boxes, scores, classes, num_detections = tensorflow_init()
 
 cap = cv2.VideoCapture("sample/one_score_one_miss.mp4")
@@ -199,8 +219,12 @@ shot_result = {
     'judgement': ""
     }
 
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True
+config.gpu_options.per_process_gpu_memory_fraction = 0.38
+
 skip_count = 0
-with tf.Session(graph=detection_graph) as sess:
+with tf.Session(graph=detection_graph, config=config) as sess:
     while True:
         ret, img = cap.read()
         skip_count += 1
@@ -209,20 +233,21 @@ with tf.Session(graph=detection_graph) as sess:
             continue
         if ret == False:
             break
+        datum.cvInputData = img
+        opWrapper.emplaceAndPop([datum])
         detection, trace = detect_shot(img, trace, width, height, sess, image_tensor, boxes, scores, classes,
                                         num_detections, previous, during_shooting, shot_result, fig, shooting_result)
 
         detection = cv2.resize(detection, (0, 0), fx=0.8, fy=0.8)
+        cv2.imshow('Pose', datum.cvOutputData)
         cv2.imshow("detection", detection)
         if cv2.waitKey(10) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
 
-# plt.title("Trajectory Fitting", figure=fig)
-# plt.ylim(bottom=0, top=height)
-# trajectory_path = os.path.join(
-#     os.getcwd(), "static/detections/trajectory_fitting.jpg")
-# fig.savefig(trajectory_path)
-# fig.clear()
-# trace_path = os.path.join(
-#     os.getcwd(), "static/detections/basketball_trace.jpg")
-# cv2.imwrite(trace_path, trace)
+plt.title("Trajectory Fitting", figure=fig)
+plt.ylim(bottom=0, top=height)
+trajectory_path = os.path.join(os.getcwd(), "trajectory_fitting.jpg")
+fig.savefig(trajectory_path)
+fig.clear()
+trace_path = os.path.join(os.getcwd(), "basketball_trace.jpg")
+cv2.imwrite(trace_path, trace)

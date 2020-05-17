@@ -2,7 +2,7 @@
 flask==1.0.2
 numpy==1.17.4
 tensorflow==1.14.0
-opencv-python-headless
+opencv-python
 werkzeug==0.16.0
 matplotlib==3.1.1
 gunicorn==19.0.0
