@@ -173,7 +173,7 @@ def detect_shot(frame, trace, width, height, sess, image_tensor, boxes, scores, 
 
 detection_graph, image_tensor, boxes, scores, classes, num_detections = tensorflow_init()
 
-cap = cv2.VideoCapture("./one_score_one_miss.mp4")
+cap = cv2.VideoCapture("sample/one_score_one_miss.mp4")
 width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
 height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 trace = np.full((int(height), int(width), 3), 255, np.uint8)
