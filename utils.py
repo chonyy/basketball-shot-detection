@@ -230,8 +230,7 @@ def detect_shot(frame, trace, width, height, sess, image_tensor, boxes, scores, 
                         during_shooting['balls_during_shooting'].clear()
                         during_shooting['isShooting'] = False
                         shooting_pose['ballInHand_frames_list'].append(shooting_pose['ballInHand_frames'])
-                        print("ball in hand frames: ",
-                              shooting_pose['ballInHand_frames'])
+                        print("ball in hand frames: ", shooting_pose['ballInHand_frames'])
                         shooting_pose['ballInHand_frames'] = 0
                         
                         print("elbow angle: ", shooting_pose['elbow_angle'])
