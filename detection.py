@@ -14,13 +14,14 @@ tf.disable_v2_behavior()
 
 datum, opWrapper = openpose_init()
 detection_graph, image_tensor, boxes, scores, classes, num_detections = tensorflow_init()
+frame_batch = 3
 
-cap = cv2.VideoCapture("sample/score_miss.mp4")
+cap = cv2.VideoCapture("sample/curry.mp4")
 width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
 height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 fps = cap.get(cv2.CAP_PROP_FPS)
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
-out = cv2.VideoWriter("sample/output.avi", fourcc, fps / 2, (int(width * 2 * 0.8), int(height * 0.8)))
+out = cv2.VideoWriter("sample/output.avi", fourcc, fps / frame_batch, (int(width * 2 * 0.8), int(height * 0.8)))
 trace = np.full((int(height), int(width), 3), 255, np.uint8)
 
 fig = plt.figure()
@@ -40,7 +41,7 @@ previous = {
     'hoop_height': 0
 }
 during_shooting = {
-    'isShooting': np.array([False]),
+    'isShooting': False,
     'balls_during_shooting': [],
     'release_angle_list': [],
     'release_point': []
@@ -71,7 +72,7 @@ with tf.Session(graph=detection_graph, config=config) as sess:
         if ret == False:
             break
         skip_count += 1
-        if(skip_count < 2):
+        if(skip_count < frame_batch):
             continue
         skip_count = 0
         detection, trace = detect_shot(img, trace, width, height, sess, image_tensor, boxes, scores, classes,
@@ -87,7 +88,12 @@ with tf.Session(graph=detection_graph, config=config) as sess:
 shooting_result['avg_elbow_angle'] = round(mean(shooting_pose['elbow_angle_list']), 2)
 shooting_result['avg_knee_angle'] = round(mean(shooting_pose['knee_angle_list']), 2)
 shooting_result['avg_release_angle'] = round(mean(during_shooting['release_angle_list']), 2)
-shooting_result['avg_ballInHand_time'] = round(mean(shooting_pose['ballInHand_frames_list']) * (2 / fps), 2)
+shooting_result['avg_ballInHand_time'] = round(mean(shooting_pose['ballInHand_frames_list']) * (frame_batch / fps), 2)
+
+print("avg", shooting_result['avg_elbow_angle'])
+print("avg", shooting_result['avg_knee_angle'])
+print("avg", shooting_result['avg_release_angle'])
+print("avg", shooting_result['avg_ballInHand_time'])
 
 plt.title("Trajectory Fitting", figure=fig)
 plt.ylim(bottom=0, top=height)
@@ -96,8 +102,3 @@ fig.savefig(trajectory_path)
 fig.clear()
 trace_path = os.path.join(os.getcwd(), "basketball_trace.jpg")
 cv2.imwrite(trace_path, trace)
-
-print("avg", shooting_result['avg_elbow_angle'])
-print("avg", shooting_result['avg_knee_angle'])
-print("avg", shooting_result['avg_release_angle'])
-print("avg", shooting_result['avg_ballInHand_time'])
