@@ -16,7 +16,7 @@ datum, opWrapper = openpose_init()
 detection_graph, image_tensor, boxes, scores, classes, num_detections = tensorflow_init()
 frame_batch = 3
 
-cap = cv2.VideoCapture("sample/curry.mp4")
+cap = cv2.VideoCapture("sample/one_score_one_miss.mp4")
 width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
 height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 fps = cap.get(cv2.CAP_PROP_FPS)
