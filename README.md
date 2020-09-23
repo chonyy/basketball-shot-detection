@@ -10,7 +10,7 @@
     <img src="img/judging.gif" width="858" height="483.34">
 </p>
 
-## Detecting Basketball and Hoop
+## Detected Basketball and Hoop
 <p align=center>
     <img src="img/demo.gif" width="717.552" height="432.432">
 </p>
