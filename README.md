@@ -1,4 +1,4 @@
-This is the pure source python version of the main project [AI Basketball Analysis](https://github.com/chonyy/AI-basketball-analysis)
+This is the pure source python version (wihout Flask) of the main project [AI Basketball Analysis](https://github.com/chonyy/AI-basketball-analysis)
 
 ## Judging Basketball Shots
 * **Orange:** Detected hoop
