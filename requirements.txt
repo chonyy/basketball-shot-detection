@@ -1,6 +1,6 @@
 -i https://pypi.org/simple
 flask==1.0.2
-numpy==1.17.4
+numpy==1.22.0
 tensorflow==1.15.2
 opencv-python
 werkzeug==0.16.0
